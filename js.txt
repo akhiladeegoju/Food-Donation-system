@@ -1,0 +1,417 @@
+##admin.jss
+let users = [
+    { id: 1, name: 'Chandrahaas', role: 'Donor', address: 'hayathnagar roadno.2',phoneno:'99xxxxxx01'  },
+    { id: 2, name: 'Anil', role: 'Donor', address: 'bouppal roadn0.5',phoneno:'92xxxxxx65' },
+    { id: 3, name: 'Akhila', role: 'Donor', address: 'kakathiyanagar roadno.1',phoneno:'94xxxxxx87'}
+];
+
+let donations = [
+    { id: 1, donor: 'Chandrahaas', amount: '50kg', type: 'Fruits', address: 'hayathnagar roadno.2',phoneno:'99xxxxxx01' },
+    { id: 2, donor: 'Anil', amount: '30kg', type: 'Vegetables', address: 'bouppal roadn0.5',phoneno:'92xxxxxx65'  },
+    { id: 3, donor: 'Akhila', amount: '20kg', type: 'Food', address: 'kakathiyanagar roadno.1',phoneno:'94xxxxxx87'}
+];
+
+function loadContent(page) {
+    const contentDiv = document.getElementById('content');
+    let content = '';
+
+    switch (page) {
+        case 'dashboard':
+            content = '<h2>Dashboard</h2><p>Loading dashboard data...</p>';
+            contentDiv.innerHTML = content;
+            setTimeout(() => {
+                const dashboardData = {
+                    totalDonations: donations.length,
+                    totalUsers: users.length,
+                    foodSaved: '1500kg'
+                };
+                contentDiv.innerHTML = `
+                    <h2>Dashboard</h2>
+                    <p><strong>Total Donations:</strong> ${dashboardData.totalDonations}</p>
+                    <p><strong>Total Users:</strong> ${dashboardData.totalUsers}</p>
+                    <p><strong>Food Saved:</strong> ${dashboardData.foodSaved}</p>
+                `;
+            }, 2000);
+            break;
+        case 'manageUsers':
+            content = `
+                <h2>Manage Users</h2>
+                <button onclick="addUser()">Add User</button>
+                <div id="userList">
+                    <p>Loading user data...</p>
+                </div>`;
+            contentDiv.innerHTML = content;
+            setTimeout(renderUserList, 1000);
+            break;
+        case 'viewDonations':
+            content = `
+                <h2>View Donations</h2>
+                <button onclick="addDonation()">Add Donation</button>
+                <div id="donationList">
+                    <p>Loading donations...</p>
+                </div>`;
+            contentDiv.innerHTML = content;
+            setTimeout(renderDonationList, 1000);
+            break;
+        case 'reports':
+            content = '<h2>Reports</h2><p>Loading reports...</p>';
+            contentDiv.innerHTML = content;
+            setTimeout(() => {
+                const reports = [
+                    { id: 1, title: 'Monthly Report', date: 'June 2024', summary: 'Summary of the report content' },
+                    { id: 2, title: 'Quarterly Report', date: 'Q2 2024', summary: 'Summary of the report content' },
+                    { id: 3, title: 'Annual Report', date: '2023', summary: 'Summary of the report content' }
+                ];
+                const reportsContent = reports.map(report => `
+                    <div class="report">
+                        <p><strong>Title:</strong> ${report.title}</p>
+                        <p><strong>Date:</strong> ${report.date}</p>
+                        <p><strong>Summary:</strong> ${report.summary}</p>
+                    </div>
+                `).join('');
+                contentDiv.innerHTML = `<h2>Reports</h2>${reportsContent}`;
+            }, 2000);
+            break;
+        default:
+            content = '<h2>Welcome</h2><p>Select an option from the menu.</p>';
+            contentDiv.innerHTML = content;
+    }
+}
+
+function logou() {
+    logoutButton.addEventListener("click", function() {
+        // Redirect to index.html when the button is clicked (logging out)
+        window.location.href = "dash.html";// Add actual logout functionality here
+    });
+}
+
+function renderUserList() {
+    const userListDiv = document.getElementById('userList');
+    const usersContent = users.map(user => `
+        <div class="user">
+            <p><strong>Name:</strong> ${user.name}</p>
+            <p><strong>Role:</strong> ${user.role}</p>
+            <button onclick="editUser(${user.id})">Edit</button>
+            <button onclick="deleteUser(${user.id})">Delete</button>
+        </div>
+    `).join('');
+    userListDiv.innerHTML = usersContent;
+}
+
+function renderDonationList() {
+    const donationListDiv = document.getElementById('donationList');
+    const donationsContent = donations.map(donation => `
+        <div class="donation">
+            <p><strong>Donor:</strong> ${donation.donor}</p>
+            <p><strong>Amount:</strong> ${donation.amount}</p>
+            <p><strong>Type:</strong> ${donation.type}</p>
+            <p><strong>address:</strong> ${donation.address}</p>
+            <p><strong>phone.no:</strong> ${donation.phoneno}</p>
+            <button onclick="editDonation(${donation.id})">Edit</button>
+            <button onclick="deleteDonation(${donation.id})">Delete</button>
+            <button onclick="requestDonation(${donation.id})">Send Request</button>
+        </div>
+    `).join('');
+    donationListDiv.innerHTML = donationsContent;
+}
+
+function addUser() {
+    const userName = prompt("Enter user name:");
+    const userRole = prompt("Enter user role:");
+    if (userName && userRole) {
+        const newUser = { id: users.length + 1, name: userName, role: userRole };
+        users.push(newUser);
+        renderUserList();
+    }
+}
+
+function editUser(userId) {
+    const user = users.find(u => u.id === userId);
+    if (user) {
+        const userName = prompt("Enter new user name:", user.name);
+        const userRole = prompt("Enter new user role:", user.role);
+        if (userName && userRole) {
+            user.name = userName;
+            user.role = userRole;
+            renderUserList();
+        }
+    }
+}
+
+function deleteUser(userId) {
+    users = users.filter(user => user.id !== userId);
+    renderUserList();
+}
+
+function addDonation() {
+    const donor = prompt("Enter donor name:");
+    const amount = prompt("Enter donation amount:");
+    const type = prompt("Enter donation type:");
+    const address = prompt("Enter donation address:");
+    const phoneno = prompt("Enter donation phoneno:");
+    if (donor && amount && type && address) {
+        const newDonation = { id: donations.length + 1, donor, amount, type, address, phoneno };
+        donations.push(newDonation);
+        renderDonationList();
+    }
+}
+
+function editDonation(donationId) {
+    const donation = donations.find(d => d.id === donationId);
+    if (donation) {
+        const donor = prompt("Enter new donor name:", donation.donor);
+        const amount = prompt("Enter new donation amount:", donation.amount);
+        const type = prompt("Enter new donation type:", donation.type);
+        const address = prompt("Enter new donation address:", donation.address);
+        const phoneno = prompt("Enter new donation phoneno:", donation.phoneno);
+        if (donor && amount && type && address && phoneno) {
+            donation.donor = donor;
+            donation.amount = amount;
+            donation.type = type;
+            donation.address = address;
+            donation.phoneno = phoneno;
+            renderDonationList();
+        }
+    }
+}
+
+function deleteDonation(donationId) {
+    donations = donations.filter(donation => donation.id !== donationId);
+    renderDonationList();
+}
+
+function requestDonation(donationId) {
+    const donation = donations.find(d => d.id === donationId);
+    if (donation) {
+        alert(`Request for ${donation.amount} of ${donation.type} from ${donation.donor} has been sent.`);
+    }
+}
+
+// Load default content
+document.addEventListener('DOMContentLoaded', () => {
+    loadContent('');
+});
+
+
+
+
+
+
+##dashboard.js
+let requests = [
+    { id: 1, user: 'anu',address: 'Hayathnagar',phoneno: 'xxxxxxxxxx'},
+    { id: 2, user: 'john',address: 'uppal',phoneno: 'xxxxxxxxxx' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadContent('profile'); // Load the profile section by default
+});
+
+function loadContent(section) {
+    const contentDiv = document.getElementById('content');
+    switch (section) {
+        case 'profile':
+            contentDiv.innerHTML = `
+                <h2>Profile</h2>
+                <p>Donor Name: tejj</p>
+                <p>Email: john.tej@example.com</p>
+            `;
+            break;
+        case 'myDonations':
+            contentDiv.innerHTML = `
+                <h2>My Donations</h2>
+                <ul>
+                    <li>Donation 1: 10 kg of vegetables</li>
+                    <li>Donation 2: 5 kg of fruits</li>
+                </ul>
+            `;
+            break;
+        case 'newDonation':
+            contentDiv.innerHTML = `
+                <h2>New Donation</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="donationType">Donation Type:</label>
+                        <select id="donationType" class="form-control" name="donationType">
+                            <option value="vegetables">Vegetables</option>
+                            <option value="fruits">Fruits</option>
+                            <option value="food">Food</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity (kg):</label>
+                        <input type="number" id="quantity" class="form-control" name="quantity" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Donate</button>
+                </form>
+                <button onclick="viewRequests()" class="btn btn-info">View Requests</button>
+            `;
+            break;
+        case 'contact':
+            contentDiv.innerHTML = `
+                <h2>Contact</h2>
+                <p>Phone No : 96969*****</p>
+                <p>Mail ID : foodwastemanagement@gmail.com</p>
+            `;
+            break;
+        case 'requests':
+            contentDiv.innerHTML = `
+                <h2>Requests</h2>
+                <div id="requestList">
+                    <p>Loading requests...</p>
+                </div>
+            `;
+            setTimeout(renderRequestList, 1000); // Simulate async loading
+            break;
+        default:
+            contentDiv.innerHTML = '<p>Error loading content. Please try again later.</p>';
+            break;
+    }
+}
+
+function renderRequestList() {
+    const requestListDiv = document.getElementById('requestList');
+    const requestsContent = requests.map(request => `
+        <div class="request">
+            <p><strong>user:</strong> ${request.user}</p>
+            <p><strong>address:</strong> ${request.address}</p>
+            <p><strong>phoneno:</strong> ${request.phoneno}</p>
+            
+            <button onclick="acceptRequest(${request.id})">Accept Request</button>
+        </div>
+    `).join('');
+    requestListDiv.innerHTML = requestsContent;
+}
+
+function acceptRequest(requestId) {
+    // Find and handle the request
+    requests = requests.filter(request => request.id !== requestId);
+    alert('Request has been accepted.');
+    renderRequestList(); // Update the list after acceptance
+}
+
+function viewRequests() {
+    loadContent('requests');
+}
+
+function logout() {
+    window.location.href = 'index.html';
+}
+
+
+
+
+
+
+##login.js
+let requests = [
+    { id: 1, user: 'anu',address: 'Hayathnagar',phoneno: 'xxxxxxxxxx'},
+    { id: 2, user: 'john',address: 'uppal',phoneno: 'xxxxxxxxxx' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadContent('profile'); // Load the profile section by default
+});
+
+function loadContent(section) {
+    const contentDiv = document.getElementById('content');
+    switch (section) {
+        case 'profile':
+            contentDiv.innerHTML = `
+                <h2>Profile</h2>
+                <p>Donor Name: tejj</p>
+                <p>Email: john.tej@example.com</p>
+            `;
+            break;
+        case 'myDonations':
+            contentDiv.innerHTML = `
+                <h2>My Donations</h2>
+                <ul>
+                    <li>Donation 1: 10 kg of vegetables</li>
+                    <li>Donation 2: 5 kg of fruits</li>
+                </ul>
+            `;
+            break;
+        case 'newDonation':
+            contentDiv.innerHTML = `
+                <h2>New Donation</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="donationType">Donation Type:</label>
+                        <select id="donationType" class="form-control" name="donationType">
+                            <option value="vegetables">Vegetables</option>
+                            <option value="fruits">Fruits</option>
+                            <option value="food">Food</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity (kg):</label>
+                        <input type="number" id="quantity" class="form-control" name="quantity" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Donate</button>
+                </form>
+                <button onclick="viewRequests()" class="btn btn-info">View Requests</button>
+            `;
+            break;
+        case 'contact':
+            contentDiv.innerHTML = `
+                <h2>Contact</h2>
+                <p>Phone No : 96969*****</p>
+                <p>Mail ID : foodwastemanagement@gmail.com</p>
+            `;
+            break;
+        case 'requests':
+            contentDiv.innerHTML = `
+                <h2>Requests</h2>
+                <div id="requestList">
+                    <p>Loading requests...</p>
+                </div>
+            `;
+            setTimeout(renderRequestList, 1000); // Simulate async loading
+            break;
+        default:
+            contentDiv.innerHTML = '<p>Error loading content. Please try again later.</p>';
+            break;
+    }
+}
+
+function renderRequestList() {
+    const requestListDiv = document.getElementById('requestList');
+    const requestsContent = requests.map(request => `
+        <div class="request">
+            <p><strong>user:</strong> ${request.user}</p>
+            <p><strong>address:</strong> ${request.address}</p>
+            <p><strong>phoneno:</strong> ${request.phoneno}</p>
+            
+            <button onclick="acceptRequest(${request.id})">Accept Request</button>
+        </div>
+    `).join('');
+    requestListDiv.innerHTML = requestsContent;
+}
+
+function acceptRequest(requestId) {
+    // Find and handle the request
+    requests = requests.filter(request => request.id !== requestId);
+    alert('Request has been accepted.');
+    renderRequestList(); // Update the list after acceptance
+}
+
+function viewRequests() {
+    loadContent('requests');
+}
+
+function logout() {
+    window.location.href = 'index.html';
+}
+
+
+
+script.js
+var btnLogin = document.getElementById('do-login');
+var idLogin = document.getElementById('login');
+var username = document.getElementById('username');
+btnLogin.onclick = function(){
+  idLogin.innerHTML = '<p>We\'re happy to see you again, </p><h1>' +username.value+ '</h1>';
+}
+
+
